@@ -51,10 +51,25 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        GetAllFilms:
+        GetFilms:
           Type: Api
           Properties:
             Path: /film
+            Method: get
+
+  GetFilmLink:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: films/
+      Handler: getFilmLink.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        GetFilmsLink:
+          Type: Api
+          Properties:
+            Path: /film-link
             Method: get
 
 Outputs:
