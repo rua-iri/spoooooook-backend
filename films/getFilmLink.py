@@ -27,7 +27,7 @@ def mysqlSelectQuery(filmId):
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT film_path from film WHERE imdb_id = '" + filmId + "';")
+    mycursor.execute("SELECT film_path from film WHERE imdb_id = %s;", (filmId, ))
     filmResult = mycursor.fetchone()
 
     filmMap = [{"filmPath": filmResult[0]}]

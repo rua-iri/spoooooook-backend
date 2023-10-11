@@ -28,7 +28,7 @@ def mysqlSelectQuery(filmCategory):
     )
 
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT film.imdb_id, poster_path FROM category INNER JOIN film_category ON category.category_id = film_category.category_id INNER JOIN film ON film_category.film_id = film.film_id WHERE category.category_title='" + filmCategory + "';")
+    mycursor.execute("SELECT film.imdb_id, poster_path FROM category INNER JOIN film_category ON category.category_id = film_category.category_id INNER JOIN film ON film_category.film_id = film.film_id WHERE category.category_title=%s;", (filmCategory, ))
     allResults = mycursor.fetchall()
 
 
