@@ -1,8 +1,15 @@
 # spoooooook-backend
 
 
-An AWS Sam project for the backend of spoooooook
-
+<div align="center">
+      <div>
+            An AWS Sam project for the backend of spoooooook
+      </div>
+      <br/>
+      <div>
+            <img src="https://github.com/rua-iri/spoooooook-backend/assets/117874491/622912d2-4dca-4c11-9958-6aefabd9e265" alt="spoooooook logo" width="40%" />
+      </div>
+</div>
 
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
