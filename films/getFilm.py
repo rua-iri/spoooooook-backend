@@ -1,12 +1,11 @@
 import json
-import secretstuff
-import mysql.connector
+import helpers
 
 def lambda_handler(event, context):
 
     filmId = event["queryStringParameters"]["imdbID"]
 
-    filmResult = mysqlSelectQuery(filmId)
+    filmResult = processQuery(filmId)
 
     return {
         'statusCode': 200,
@@ -16,20 +15,16 @@ def lambda_handler(event, context):
 
 
 
-def mysqlSelectQuery(filmId):
+def processQuery(filmId):
 
-    # connect to database and execute query
-    mydb = mysql.connector.connect(
-        host=secretstuff.hostName,
-        user=secretstuff.userName,
-        password=secretstuff.passwordName,
-        database=secretstuff.databaseName,
-    )
+    selectQuery = """SELECT film_title, 
+                    description, 
+                    release_year, 
+                    tomato_rating 
+                    from film 
+                    WHERE imdb_id = (?);"""
 
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT film_title, description, release_year, tomato_rating from film WHERE imdb_id = %s;", (filmId, ))
-    filmResult = mycursor.fetchone()
-
+    filmResult = helpers.selectQueryDB(selectQuery, (filmId, ), False)
     filmMap = [{"filmTitle": filmResult[0], "filmDescription": filmResult[1], "releaseYear": filmResult[2], "filmRating": filmResult[3]}]
 
     return filmMap

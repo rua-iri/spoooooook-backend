@@ -1,12 +1,12 @@
 import json
-import secretstuff
-import mysql.connector
+import helpers
+
 
 def lambda_handler(event, context):
 
     filmGenre = event["queryStringParameters"]["category"]
 
-    filmResults = mysqlSelectQuery(filmGenre)
+    filmResults = processQuery(filmGenre)
 
     return {
         'statusCode': 200,
@@ -16,20 +16,20 @@ def lambda_handler(event, context):
 
 
 
-def mysqlSelectQuery(filmCategory):
+def processQuery(filmCategory):
     resultsList = []
 
-    # connect to database and execute query
-    mydb = mysql.connector.connect(
-        host=secretstuff.hostName,
-        user=secretstuff.userName,
-        password=secretstuff.passwordName,
-        database=secretstuff.databaseName,
-    )
+    selectQuery = """SELECT film.imdb_id, 
+                    poster_path 
+                    FROM category 
+                    INNER JOIN film_category 
+                    ON category.category_id = film_category.category_id 
+                    INNER JOIN film ON film_category.film_id = film.film_id 
+                    WHERE category.category_title=(?);"""
+    
+    allResults = helpers.selectQueryDB(selectQuery, (filmCategory, ), True)
+    
 
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT film.imdb_id, poster_path FROM category INNER JOIN film_category ON category.category_id = film_category.category_id INNER JOIN film ON film_category.film_id = film.film_id WHERE category.category_title=%s;", (filmCategory, ))
-    allResults = mycursor.fetchall()
 
 
     # append each result to the results list
