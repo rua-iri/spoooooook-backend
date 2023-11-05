@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   spoooooook-backend
@@ -10,6 +10,9 @@ Globals:
   Function:
     Timeout: 3
     MemorySize: 128
+    Environment:
+      Variables:
+        DB_NAME: !Ref UsersTable
 
 Resources:
   HelloWorldFunction:
@@ -26,6 +29,21 @@ Resources:
           Properties:
             Path: /hello
             Method: get
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: username
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: username
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 
   GetAllFilms:
     Type: AWS::Serverless::Function
@@ -71,6 +89,53 @@ Resources:
           Properties:
             Path: /film-link
             Method: get
+
+  UserLogin:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user/
+      Handler: loginUser.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        UserLogin:
+          Type: Api
+          Properties:
+            Path: /user-login
+            Method: post
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamoDB:GetItem
+                - dynamoDB:PutItem
+              Resource: !GetAtt UsersTable.Arn
+
+  UserRegister:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user/
+      Handler: registerUser.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Events:
+        UserRegister:
+          Type: Api
+          Properties:
+            Path: /user-register
+            Method: post
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamoDB:GetItem
+                - dynamoDB:PutItem
+              Resource: !GetAtt UsersTable.Arn
+
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
