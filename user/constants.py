@@ -1,0 +1,5 @@
+
+ERROR_RESPONSE_CODE = 400
+SUCCESS_RESPONSE_CODE = 200
+
+responseBody = {}
