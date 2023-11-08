@@ -8,6 +8,7 @@ def lambda_handler(event, context):
 
     responseStatusCode = constants.ERROR_RESPONSE_CODE
     responseBody = {}
+    
 
     if helpers.createUser(loginData):
         responseStatusCode = constants.SUCCESS_RESPONSE_CODE

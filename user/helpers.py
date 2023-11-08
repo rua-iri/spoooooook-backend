@@ -1,30 +1,41 @@
 import os
 import boto3
 import bcrypt
+import time
 
 dbClient = boto3.client("dynamodb")
-USER_TABLE = os.environ.get("UsersTable");
+USER_TABLE = os.environ.get("DB_NAME");
 
 
 def checkUser(userCred):
     userRecord = dbClient.get_item(TableName=USER_TABLE, Key={
-        "username": {"S": userCred.username}
+        "username": {"S": userCred['username']}
     })
 
     if "Item" in userRecord:
-        bcrypt.checkpw(bytes(userCred['password'], "utf-8"), 
-                       bytes(userRecord['Item']['password']['s'], "utf-8"))
+        return bcrypt.checkpw(bytes(userCred['password'], "utf-8"), 
+                       bytes(userRecord['Item']['password']['S'], "utf-8"))
     else:
         return False
 
 
 
 def createUser(userData):
-    salt = bcrypt.gensalt()
-    encryptedPassword = bcrypt.hashpw(userData['password'], salt=salt)
+    st=time.perf_counter()
+    salt = bcrypt.gensalt(rounds=6)
+    encryptedPassword = bcrypt.hashpw(bytes(userData['password'], "utf-8"), salt=salt)
+    end = time.perf_counter()
+
+    print("Time for hashing: ", end - st)
+
+    print(USER_TABLE)
+
+    
     
     # try to add the new user, as long as username is unique
     try:
+        st=time.perf_counter()
+
         dbClient.put_item(
             TableName=USER_TABLE, 
             Item={
@@ -37,6 +48,10 @@ def createUser(userData):
             },
             ConditionExpression='attribute_not_exists(username)'
         )
+        end = time.perf_counter()
+
+        print("Time for db update: ", end - st)
+
 
         return True
 
