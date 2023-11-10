@@ -12,10 +12,9 @@ def lambda_handler(event, context):
     if helpers.checkUser(loginData):
         responseStatusCode = constants.SUCCESS_RESPONSE_CODE
         responseBody['message'] = "Login Successful"
+        responseBody['auth_token'] = helpers.generateJWT(loginData['username'])
     else:
         responseBody['error'] = "Invalid Login"
-        
-
 
 
     return {

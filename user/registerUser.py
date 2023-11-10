@@ -9,10 +9,10 @@ def lambda_handler(event, context):
     responseStatusCode = constants.ERROR_RESPONSE_CODE
     responseBody = {}
     
-
     if helpers.createUser(loginData):
         responseStatusCode = constants.SUCCESS_RESPONSE_CODE
         responseBody['message'] = "Registration Successful"
+        responseBody['auth_token'] = helpers.generateJWT(loginData['username'])
     else:
         responseBody['error'] = "Invalid Registration"
 
