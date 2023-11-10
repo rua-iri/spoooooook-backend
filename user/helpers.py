@@ -2,9 +2,13 @@ import os
 import boto3
 import bcrypt
 import time
+import jwt
+import dotenv
 
 dbClient = boto3.client("dynamodb")
 USER_TABLE = os.environ.get("DB_NAME");
+dotenv.load_dotenv()
+JWT_SECRET = os.getenv('JWT_SECRET')
 
 
 def checkUser(userCred):
@@ -57,4 +61,17 @@ def createUser(userData):
 
     except:
         return False
+
+
+
+def generateJWT(username):
+    expiry = time.time() + 86400
+    payload = {
+        'username': username, 
+        'exp': expiry
+        }
+    
+    encoded = jwt.encode(payload=payload, key=JWT_SECRET, algorithm='HS256')
+
+    return encoded
 

@@ -1,11 +1,19 @@
 import json
 import helpers
 
-
 def lambda_handler(event, context):
 
-    filmGenre = event["queryStringParameters"]["category"]
+    jwt_token = event['headers'].get('authorization')
 
+    if not helpers.validateJWT(jwt_token):
+        return {
+            'statusCode': 403,
+            "headers": {"Access-Control-Allow-Origin": "*"},
+            'body': json.dumps({'error': 'Invalid Authorization Token'})
+        }
+
+
+    filmGenre = event["queryStringParameters"]["category"]
     filmResults = processQuery(filmGenre)
 
     return {
