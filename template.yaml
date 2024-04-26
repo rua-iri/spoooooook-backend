@@ -13,6 +13,11 @@ Globals:
     Environment:
       Variables:
         DB_NAME: !Ref UsersTable
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'content-type'"
+      AllowOrigin: "'*'"
 
 Resources:
   HelloWorldFunction:
