@@ -10,8 +10,8 @@ dotenv.load_dotenv()
 JWT_SECRET = os.getenv("JWT_SECRET")
 
 
-def selectQueryDB(query, values, isFetchAll):
-    results = cur.execute(query, values)
+def selectQueryDB(query: str, values: str, isFetchAll: bool) -> list | tuple:
+    results: sqlite3.Cursor = cur.execute(query, values)
 
     if isFetchAll:
         return results.fetchall()

@@ -1,5 +1,26 @@
 import json
 import helpers
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
+def processQuery(filmId):
+
+    try:
+        selectQuery = "SELECT film_path from film WHERE imdb_id = (?);"
+
+        filmResult = helpers.selectQueryDB(selectQuery, (filmId, ), False)
+
+        if filmResult is None:
+            return []
+
+        return {"filmPath": filmResult[0]}
+
+    except Exception as e:
+        raise e
+
 
 def lambda_handler(event, context):
 
@@ -12,27 +33,39 @@ def lambda_handler(event, context):
     #         'body': json.dumps({'error': 'Invalid Authorization Token'})
     #     }
 
-
-    filmId = event["queryStringParameters"]["imdbID"]
-
-    filmResult = processQuery(filmId)
-
-    return {
-        'statusCode': 200,
-        "headers": {"Access-Control-Allow-Origin": "*"},
-        'body': json.dumps(filmResult)
+    response: dict = {
+        'statusCode': 500,
+        'headers': {'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({"status": "error", "error": "internal server error"})
     }
 
+    try:
+        filmId: str = event["queryStringParameters"].get("imdbID")
 
+        if not filmId:
+            response.update({'statusCode': 400})
+            response.update({
+                'body': json.dumps({"status": "error", "error": "Film ID required"})
+            })
+            return response
 
-def processQuery(filmId):
+        filmResult = processQuery(filmId)
 
-    selectQuery = "SELECT film_path from film WHERE imdb_id = (?);"
+        if not filmResult:
+            response.update({'statusCode': 404})
+            response.update({
+                'body': json.dumps({"status": "error", "error": "No results found"})
+            })
+            return response
 
-    filmResult = helpers.selectQueryDB(selectQuery, (filmId, ), False)
-    filmMap = [{"filmPath": filmResult[0]}]
+        response.update({'statusCode': 200})
+        response.update({'body': json.dumps({
+            'status': 'success',
+            'data': filmResult
+        })})
 
-    return filmMap
+        return response
 
-
-
+    except Exception as e:
+        logger.error(e)
+        return response
