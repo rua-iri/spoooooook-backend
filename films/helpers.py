@@ -9,6 +9,7 @@ cur = con.cursor()
 dotenv.load_dotenv()
 JWT_SECRET = os.getenv("JWT_SECRET")
 
+
 def selectQueryDB(query, values, isFetchAll):
     results = cur.execute(query, values)
 
@@ -18,11 +19,10 @@ def selectQueryDB(query, values, isFetchAll):
         return results.fetchone()
 
 
-
 def validateJWT(token):
 
     try:
         jwt.decode(token, key=JWT_SECRET, algorithms=['HS256'])
         return True
-    except:
+    except Exception:
         return False

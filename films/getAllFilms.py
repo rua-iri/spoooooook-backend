@@ -49,9 +49,9 @@ def lambda_handler(event, context):
     #         'body': json.dumps({'error': 'Invalid Authorization Token'})
     #     }
 
-    response_body: dict = {
+    response: dict = {
         'statusCode': 500,
-        "headers": {"Access-Control-Allow-Origin": "*"},
+        'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({"status": "error", "error": "internal server error"})
     }
 
@@ -59,40 +59,40 @@ def lambda_handler(event, context):
 
         print(event)
 
-        film_genre: str = event["queryStringParameters"]["category"]
+        film_genre: str = event["queryStringParameters"].get("category")
         logger.info(f"Film Genre: {film_genre}")
 
         # ensure that film genre is provided
         if not film_genre:
-            response_body.update({"statusCode": "400"})
-            response_body.update(
+            response.update({"statusCode": "400"})
+            response.update(
                 {'body': json.dumps(
                     {"status": "error", "error": "Category is required"})
                  }
             )
-            return response_body
+            return response
 
         # query for films in this genre
         film_results: list = processQuery(film_genre)
 
         if not film_results:
-            response_body.update({"statusCode": "404"})
-            response_body.update(
+            response.update({"statusCode": "404"})
+            response.update(
                 {'body': json.dumps(
                     {"status": "error", "error": "No results found"}
                 )}
             )
-            return response_body
+            return response
 
-        response_body.update({'statusCode': 200})
-        response_body.update(
+        response.update({'statusCode': 200})
+        response.update(
             {'body': json.dumps({
                 "status": "success",
                 "data": film_results
             })})
 
-        return response_body
+        return response
 
     except Exception as e:
         logger.error(e)
-        return response_body
+        return response
