@@ -57,7 +57,7 @@ def lambda_handler(event, context):
 
     try:
 
-        print(event)
+        logger.info(f"{event=}")
 
         film_genre: str = event["queryStringParameters"].get("category")
         logger.info(f"Film Genre: {film_genre}")
