@@ -41,7 +41,7 @@ Resources:
     Properties:
       CodeUri: films/
       Handler: getAllFilms.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.10
       Architectures:
         - x86_64
       Events:
@@ -56,7 +56,7 @@ Resources:
     Properties:
       CodeUri: films/
       Handler: getFilm.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.10
       Architectures:
         - x86_64
       Events:
@@ -71,7 +71,7 @@ Resources:
     Properties:
       CodeUri: films/
       Handler: getFilmLink.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.10
       Architectures:
         - x86_64
       Events:
@@ -86,7 +86,7 @@ Resources:
     Properties:
       CodeUri: user/
       Handler: loginUser.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.10
       Architectures:
         - x86_64
       Events:
@@ -109,7 +109,7 @@ Resources:
     Properties:
       CodeUri: user/
       Handler: registerUser.lambda_handler
-      Runtime: python3.11
+      Runtime: python3.10
       Architectures:
         - x86_64
       Events:

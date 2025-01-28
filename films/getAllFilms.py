@@ -52,7 +52,10 @@ def lambda_handler(event, context):
     response: dict = {
         'statusCode': 500,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps({"status": "error", "error": "internal server error"})
+        'body': json.dumps({
+            "status": "error",
+            "error": "internal server error"
+        })
     }
 
     try:

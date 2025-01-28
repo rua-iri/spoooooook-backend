@@ -36,7 +36,10 @@ def lambda_handler(event, context):
     response: dict = {
         'statusCode': 500,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps({"status": "error", "error": "internal server error"})
+        'body': json.dumps({
+            "status": "error",
+            "error": "internal server error"
+        })
     }
 
     try:
@@ -45,7 +48,9 @@ def lambda_handler(event, context):
         if not filmId:
             response.update({'statusCode': 400})
             response.update({
-                'body': json.dumps({"status": "error", "error": "Film ID required"})
+                'body': json.dumps({
+                    "status": "error",
+                    "error": "Film ID required"})
             })
             return response
 
@@ -54,7 +59,10 @@ def lambda_handler(event, context):
         if not filmResult:
             response.update({'statusCode': 404})
             response.update({
-                'body': json.dumps({"status": "error", "error": "No results found"})
+                'body': json.dumps({
+                    "status": "error",
+                    "error": "No results found"
+                })
             })
             return response
 
