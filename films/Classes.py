@@ -9,15 +9,17 @@ class Lambda_Response:
 
     def to_dict(self):
         if self.status_code >= 400:
-            message: dict = {"error": self.message}
+            message_type = "error"
         else:
-            message: dict = {"message": self.message}
+            message_type = "message"
+
+        message_content = self.message
 
         return {
             'statusCode': self.status_code,
             'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
                 "status": self.status,
-                message
+                message_type: message_content
             })
         }
